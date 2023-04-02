@@ -1,0 +1,146 @@
+activity_main.xml
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:orientation="vertical">
+
+    <Chronometer
+        android:id="@+id/chronometer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:format=" 예약에 걸린 시간 %s "
+        android:gravity="center"
+        android:textSize="20dp" />
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/rCal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="날짜 설정 (데이터피커)"
+            android:visibility="invisible" />
+
+        <RadioButton
+            android:id="@+id/rTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="시간 설정"
+            android:visibility="invisible" />
+    </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <DatePicker
+                android:id="@+id/dPicker"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:datePickerMode="calendar" />
+
+            <TimePicker
+                android:id="@+id/tPicker"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:timePickerMode="spinner" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:longClickable="true"
+        android:text="0000 년 00 월 00 일 00 시 00 분 예약됨" />
+</LinearLayout>
+package com.example.Project6-1;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.os.SystemClock;
+import android.view.View;
+import android.widget.Chronometer;
+import android.widget.DatePicker;
+import android.widget.RadioButton;
+import android.widget.TextView;
+import android.widget.TimePicker;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
+    Chronometer chrono;
+    RadioButton rCal, rTime;
+    DatePicker dPicker;
+    TimePicker tPicker;
+    TextView tView;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        setTitle("시간 예약");
+
+        chrono = findViewById(R.id.chronometer);
+        rCal = findViewById(R.id.rCal);
+        rTime = findViewById(R.id.rTime);
+        dPicker = findViewById(R.id.dPicker);
+        tPicker = findViewById(R.id.tPicker);
+        tView = findViewById(R.id.tView);
+
+        tPicker.setVisibility(View.INVISIBLE);
+        dPicker.setVisibility(View.INVISIBLE);
+
+        rCal.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                tPicker.setVisibility(View.INVISIBLE);
+                dPicker.setVisibility(View.VISIBLE);
+            }
+        });
+        rTime.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                tPicker.setVisibility(View.VISIBLE);
+                dPicker.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        chrono.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                chrono.setBase(SystemClock.elapsedRealtime());
+                chrono.start();
+                chrono.setTextColor(Color.RED);
+
+                rCal.setVisibility(View.VISIBLE);
+                rTime.setVisibility(View.VISIBLE);
+            }
+        });
+
+        tView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                chrono.stop();
+                chrono.setTextColor(Color.BLUE);
+
+                String dateStr = dPicker.getYear() + "년" + (dPicker.getMonth() + 1) + "월" +
+                        dPicker.getDayOfMonth() + "일" + tPicker.getCurrentHour() + "시" +
+                        tPicker.getCurrentMinute() + "분" + " 예약됨";
+                tView.setText(dateStr);
+
+                rCal.setVisibility(View.INVISIBLE);
+                rTime.setVisibility(View.INVISIBLE);
+                tPicker.setVisibility(View.INVISIBLE);
+                tPicker.setVisibility(View.INVISIBLE);
+                return false;
+            }
+        });
+    }
+}
