@@ -115,7 +115,7 @@ AndroidManifest.xml
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:label="간단 웹브라우저">
+            android:label="안드로이드 웹브라우저">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
